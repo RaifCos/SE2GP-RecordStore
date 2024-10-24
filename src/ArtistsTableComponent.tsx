@@ -39,9 +39,13 @@ const artistsTableComponent = () => {
 
   return (
         <table>
+            
             <thead>
+              <tr>
+                <th style={{ backgroundColor: 'black', color: 'white' }}>Artists Table</th>
+              </tr>
                 <tr>
-                    <th>Name</th>
+                    <th>Artist Name</th>
                 </tr>
             </thead>
             <tbody>

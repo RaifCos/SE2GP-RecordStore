@@ -41,6 +41,9 @@ const RecordsTableComponent = () => {
         <table>
             <thead>
                 <tr>
+                  <th style={{ backgroundColor: 'black', color: 'white' }}>Records Table</th>
+                </tr>
+                <tr>
                     <th>Name</th>
                     <th>Genre</th>
                     <th>Year Released</th>
