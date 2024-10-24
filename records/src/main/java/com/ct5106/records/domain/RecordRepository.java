@@ -10,11 +10,23 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface RecordRepository extends CrudRepository<Record, Long> {
-    List<Record> findByName (String name);
-    List<Record> findByGenre (String genre);
-    List<Record> findByYearReleased (int yearReleased);
+    @Query("select r from Record r join r.artist a where a.name = :artistName")
+    List<Record> findByArtistName(@Param("artistName") String artistName);
 
-    // Fetch cars by price range using SQL
+    @Query("select r from Record r where r.name = :name")
+    List<Record> findByRecordName(@Param("name") String name);
+
+
+    @Query("select r from Record r where r.genre = :genre")
+    List<Record> findByGenre(@Param("genre") String genre);
+
+
+    @Query("select r from Record r where r.yearReleased = :yearReleased")
+    List<Record> findByYearReleased(@Param("yearReleased") int yearReleased);
+
+    @Query("select r from Record r where r.id = :id")
+    List<Record> findByRecordId(@Param("id") Long id);
+
     @Query("select c from Record c where c.price between ?1 and ?2")
     List<Record> findByPriceBetween(@Param("low") double low, @Param("high") double high);
 }

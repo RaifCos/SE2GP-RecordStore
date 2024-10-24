@@ -8,18 +8,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Artist {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long artistID;
 
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "artist", fetch = FetchType.EAGER)
+    private int numMembers;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "artist", fetch = FetchType.LAZY)
     private List<Record> records;
 
 
-    public Artist(String name) {
+    public Artist(String name, int numMembers) {
         this.name = name;
+        this.numMembers = numMembers;
     }
 
     public Artist() {
