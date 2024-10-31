@@ -1,7 +1,7 @@
 import './App.css';
-import RecordsTableComponent from './RecordsTableComponent';
-import ArtistsTableComponent from './ArtistsTableComponent';
-import CartsTableComponent from './CartsTableComponent';
+import RecordsTableComponent from './components/RecordsTableComponent';
+import ArtistsTableComponent from './components/ArtistsTableComponent';
+import CartsTableComponent from './components/CartsTableComponent';
 
 function App() {
   return (
