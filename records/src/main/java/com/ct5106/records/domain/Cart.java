@@ -94,4 +94,12 @@ public class Cart {
         // Round to 2 Decimal Places
         total = (Math.round(total * 100f)) / 100f;
     }
+
+    /**
+     * Method to get the number of Items in the Cart.
+     * @return the size of the list of Records in the Cart.
+     */
+    public int getItemCount() {
+        return records.size();
+    }
 }
