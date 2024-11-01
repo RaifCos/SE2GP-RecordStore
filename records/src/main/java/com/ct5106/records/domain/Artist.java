@@ -1,22 +1,25 @@
 package com.ct5106.records.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Artist {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long artistID;
 
     private String name;
+
+    public int getNumMembers() {
+        return numMembers;
+    }
+
     private int numMembers;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "artist", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "artist")
+
     private List<Record> records;
 
 
@@ -43,11 +46,6 @@ public class Artist {
 
     public List<Record> getRecords() {
         return records;
-    }
-
-    public void setRecords(List<Record> records)
-    {
-        this.records = records;
     }
 
     @Override
