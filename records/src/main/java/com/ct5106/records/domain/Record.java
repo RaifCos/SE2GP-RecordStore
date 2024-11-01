@@ -1,24 +1,20 @@
 package com.ct5106.records.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 @Entity
 public class Record {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    //these other entity fields will be automatically mapped to the DB too
+
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "artistID")
+    @JsonManagedReference
+    @ManyToOne()
+    @JoinColumn(name = "artistid")
     private Artist artist;
 
     private String genre;
@@ -28,6 +24,7 @@ public class Record {
     public Record() {
         super();
     }
+
     public Record(String name, Artist artist, String genre, int yearReleased, double price) {
         super();
         this.name = name;
@@ -36,42 +33,37 @@ public class Record {
         this.yearReleased = yearReleased;
         this.price = price;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public void setYearReleased(int yearReleased) {
-        this.yearReleased = yearReleased;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-    public void setArtist(Artist artist) {
-        this.artist = artist;
-    }
-
 
     public Long getId() {
         return id;
     }
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
-    public Artist getArtist(){
+
+    public Artist getArtist() {
         return this.artist;
     }
-    public String getGenre(){
+
+    public String getGenre() {
         return this.genre;
     }
-    public int getYearReleased(){
+
+    public int getYearReleased() {
         return this.yearReleased;
     }
-    public double getPrice(){
+
+    public double getPrice() {
         return this.price;
     }
+    @Override
+    public String toString() {
+        return "Record{" +
+                "title='" + name + '\'' +
+                ", artist=" + (artist != null ? artist.getName() : "Unknown") +
+                ", price=" + price +
+                '}';
+    }
+
 }
