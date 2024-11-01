@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.ct5106.records.RecordsApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-01T12:53:40" hostname="LENOVO5I" time="0.989">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.ct5106.records.RecordsApplicationTests" time="0.989"/>
+  <system-out><![CDATA[12:53:32.218 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.ct5106.records.RecordsApplicationTests]: RecordsApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+12:53:32.404 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.ct5106.records.RecordsApplication for test class com.ct5106.records.RecordsApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+2024-11-01T12:53:32.881Z  INFO 11152 --- [records] [    Test worker] c.c.records.RecordsApplicationTests      : Starting RecordsApplicationTests using Java 17.0.12 with PID 11152 (started by mbunc in C:\Users\mbunc\Documents\GitHub\record-store-2\records)
+2024-11-01T12:53:32.881Z  INFO 11152 --- [records] [    Test worker] c.c.records.RecordsApplicationTests      : No active profile set, falling back to 1 default profile: "default"
+2024-11-01T12:53:33.936Z  INFO 11152 --- [records] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-01T12:53:34.009Z  INFO 11152 --- [records] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 65 ms. Found 3 JPA repository interfaces.
+2024-11-01T12:53:34.780Z  INFO 11152 --- [records] [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-01T12:53:34.892Z  INFO 11152 --- [records] [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2024-11-01T12:53:34.942Z  INFO 11152 --- [records] [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-11-01T12:53:35.374Z  INFO 11152 --- [records] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-01T12:53:35.414Z  INFO 11152 --- [records] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-11-01T12:53:35.583Z  INFO 11152 --- [records] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=ROOT
+2024-11-01T12:53:35.584Z  INFO 11152 --- [records] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-11-01T12:53:36.609Z  INFO 11152 --- [records] [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists app_user cascade 
+Hibernate: drop table if exists artist cascade 
+Hibernate: drop table if exists record cascade 
+Hibernate: drop sequence if exists app_user_seq
+Hibernate: drop sequence if exists artist_seq
+Hibernate: drop sequence if exists record_seq
+Hibernate: create sequence app_user_seq start with 1 increment by 50
+Hibernate: create sequence artist_seq start with 1 increment by 50
+Hibernate: create sequence record_seq start with 1 increment by 50
+Hibernate: create table app_user (id bigint not null, password varchar(255) not null, role varchar(255) not null, username varchar(255) not null unique, primary key (id))
+Hibernate: create table artist (num_members integer not null, artistid bigint not null, name varchar(255), primary key (artistid))
+Hibernate: create table record (price float(53) not null, year_released integer not null, artistid bigint, id bigint not null, genre varchar(255), name varchar(255), primary key (id))
+Hibernate: alter table if exists record add constraint FKyhrahbwfysnam78ffabk7xxi foreign key (artistid) references artist
+2024-11-01T12:53:36.665Z  INFO 11152 --- [records] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-01T12:53:37.010Z  INFO 11152 --- [records] [    Test worker] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-01T12:53:37.525Z  INFO 11152 --- [records] [    Test worker] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2024-11-01T12:53:37.661Z  WARN 11152 --- [records] [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-01T12:53:40.153Z  INFO 11152 --- [records] [    Test worker] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2024-11-01T12:53:40.377Z  INFO 11152 --- [records] [    Test worker] c.c.records.RecordsApplicationTests      : Started RecordsApplicationTests in 7.731 seconds (process running for 9.257)
+Hibernate: select next value for app_user_seq
+Hibernate: insert into app_user (password,role,username,id) values (?,?,?,?)
+Hibernate: select next value for app_user_seq
+Hibernate: insert into app_user (password,role,username,id) values (?,?,?,?)
+Hibernate: select au1_0.id,au1_0.password,au1_0.role,au1_0.username from app_user au1_0
+2024-11-01T12:53:40.835Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : User: user with Role: USER and password: $2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue
+2024-11-01T12:53:40.835Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : User: admin with Role: ADMIN and password: $2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW
+Hibernate: select next value for artist_seq
+Hibernate: insert into artist (name,num_members,artistid) values (?,?,?)
+Hibernate: select next value for artist_seq
+Hibernate: insert into artist (name,num_members,artistid) values (?,?,?)
+Hibernate: insert into artist (name,num_members,artistid) values (?,?,?)
+Hibernate: insert into artist (name,num_members,artistid) values (?,?,?)
+Hibernate: insert into artist (name,num_members,artistid) values (?,?,?)
+Hibernate: select next value for record_seq
+Hibernate: insert into record (artistid,genre,name,price,year_released,id) values (?,?,?,?,?,?)
+Hibernate: select next value for record_seq
+Hibernate: insert into record (artistid,genre,name,price,year_released,id) values (?,?,?,?,?,?)
+Hibernate: insert into record (artistid,genre,name,price,year_released,id) values (?,?,?,?,?,?)
+Hibernate: insert into record (artistid,genre,name,price,year_released,id) values (?,?,?,?,?,?)
+Hibernate: insert into record (artistid,genre,name,price,year_released,id) values (?,?,?,?,?,?)
+Hibernate: insert into record (artistid,genre,name,price,year_released,id) values (?,?,?,?,?,?)
+Hibernate: select r1_0.id,r1_0.artistid,r1_0.genre,r1_0.name,r1_0.price,r1_0.year_released from record r1_0
+2024-11-01T12:53:40.924Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : name: Speak Now, price: 30.0
+2024-11-01T12:53:40.924Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : name: If You're Feeling Sinister, price: 25.0
+2024-11-01T12:53:40.924Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : name: You Will Never Know Why, price: 20.0
+2024-11-01T12:53:40.924Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : name: To Pimp A Butterfly, price: 35.0
+2024-11-01T12:53:40.924Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : name: Sour, price: 20.0
+2024-11-01T12:53:40.924Z  INFO 11152 --- [records] [    Test worker] com.ct5106.records.RecordsApplication    : name: Damn, price: 20.0
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
