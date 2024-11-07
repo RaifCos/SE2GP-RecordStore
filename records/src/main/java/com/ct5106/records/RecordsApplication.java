@@ -8,21 +8,26 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
 @SpringBootApplication
 public class RecordsApplication implements CommandLineRunner{
 	private final RecordRepository repository;
 	private final ArtistRepository arepository;
 	private final AppUserRepository urepository;
+	private final CartRepository cartRepository;
 
 	private static final Logger logger = LoggerFactory.getLogger(RecordsApplication.class);
 
 
-	public RecordsApplication(RecordRepository repository, ArtistRepository arepository, AppUserRepository urepository)
+	public RecordsApplication(RecordRepository repository, ArtistRepository arepository, AppUserRepository urepository, CartRepository cartRepository)
 	{
 		this.repository = repository;
 		this.arepository = arepository;
 		this.urepository = urepository;
-	}
+        this.cartRepository = cartRepository;
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(RecordsApplication.class, args);
@@ -32,14 +37,27 @@ public class RecordsApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception
 	{
-		// username, password, role
-// "user", "user", "USER"
-		urepository.save(new
-				AppUser("user","$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue","USER"))
-		;
-// "admin", "admin", ADMIN"
-		urepository.save(new
-				AppUser("admin","$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW", "ADMIN"));
+		AppUser user1 = urepository.save(new AppUser(
+				"user",
+				"$2a$10$NVM0n8ElaRgg7zWO1CxUdei7vWoPg91Lz2aYavh9.f9q0e4bRadue",
+				"USER",
+				"marksmith@example.com",
+				"Mark",
+				"Smith",
+				"1234567890",
+				"Renmore, Galway"
+		));
+
+		urepository.save(new AppUser(
+				"admin",
+				"$2a$10$8cjz47bjbR4Mn8GMg9IZx.vyjhLXR/SKKMSZ9.mP9vpMu0ssKi8GW",
+				"ADMIN",
+				"mary@example.com",
+				"Mary",
+				"Black",
+				"0987654321",
+				"Leitrim Village, Leitrim "
+		));
 
 		for (AppUser user : urepository.findAll()) {
 			logger.info("User: {} with Role: {} and password: {}", user.getUsername(), user.getRole(), user.getPassword());
@@ -58,8 +76,8 @@ public class RecordsApplication implements CommandLineRunner{
 		arepository.save(artist5);
 
 
-		repository.save(new Record("Speak Now", artist1, "Pop", 2010, 30));
-		repository.save(new Record("If You're Feeling Sinister", artist2, "Folk", 1996, 25));
+		Record r1 = repository.save(new Record("Speak Now", artist1, "Pop", 2010, 30));
+		Record r2 = repository.save(new Record("If You're Feeling Sinister", artist2, "Folk", 1996, 25));
 		repository.save(new Record("You Will Never Know Why", artist3, "Pop", 2009, 20));
 		repository.save(new Record("To Pimp A Butterfly", artist4, "Rap", 2015, 35));
 		repository.save(new Record("Sour", artist5, "Pop", 2021, 20));
@@ -70,5 +88,22 @@ public class RecordsApplication implements CommandLineRunner{
 		{
 			logger.info("name: {}, price: {}", record.getName(), record.getPrice());
 		}
+
+		CartItem cartItem1 = new CartItem(null, r1);
+		CartItem cartItem2 = new CartItem(null, r2);
+
+		// Set CartItems to the Cart (associate the cart)
+		Cart cart = new Cart(user1);
+		cart.setCartItems(List.of(cartItem1, cartItem2));  // Set the CartItems
+
+		// Link the CartItems to the Cart
+		cartItem1.setCart(cart);
+		cartItem2.setCart(cart);
+
+		// Persist Cart and CartItems
+		cartRepository.save(cart);
+
+		// Log saved cart
+		//logger.info("Cart created for user: {} with total: {}", user1.getUsername(), cart.getTotal());
 	}
 }

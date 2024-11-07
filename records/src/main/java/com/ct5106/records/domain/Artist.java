@@ -1,5 +1,6 @@
 package com.ct5106.records.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class Artist {
     private String name;
     private int numMembers;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "artist", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Record> records;
 
 

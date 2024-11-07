@@ -21,6 +21,13 @@ import com.ct5106.records.Service.UserDetailsServiceImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig
@@ -42,25 +49,34 @@ public class SecurityConfig
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource()
+    {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowCredentials(false);
+        config.applyPermitDefaultValues();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception
     {
         return authConfig.getAuthenticationManager();
     }
 
-
     // Add filterChain method
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
-        http.csrf((csrf) -> csrf.disable())
-                .sessionManagement(
-                        (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated())
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);;
+        http.csrf((csrf) ->
+                csrf.disable()).cors(withDefaults()).authorizeHttpRequests((authorizeHttpRequests)
+                -> authorizeHttpRequests.anyRequest().permitAll());
         return http.build();
     }
-
 
     /*
      * @Bean public InMemoryUserDetailsManager userDetailsService() { UserDetails
