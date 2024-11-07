@@ -42,6 +42,7 @@ const artistsTableComponent = () => {
       <h1>Artists List</h1>
         <table>
             <thead>
+
                 <tr>
                     <th>Artist Name</th>
                 </tr>

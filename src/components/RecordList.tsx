@@ -2,6 +2,22 @@ import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { RecordJSON } from "../types";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import {
+  DataGrid,
+  GridColDef,
+  GridCellParams,
+  GridToolbar,
+} from "@mui/x-data-grid";
+
+const columns: GridColDef[] = [
+  { field: "name", headerName: "Make", width: 200 },
+  { field: "genre", headerName: "Model", width: 200 },
+  { field: "yearReleased", headerName: "Year", width: 150 },
+  { field: "price", headerName: "Price", width: 150 },
+]  
 
 
 interface ApiResponse {
@@ -17,15 +33,26 @@ const fetchRecords = async (): Promise<RecordJSON[]> => {
   return response.data._embedded.records;
 };
 
+/**
+const { data, isError, isLoading, isSuccess } =
+  useQuery({
+  queryKey: ["records"],
+  queryFn: fetchRecords,
+});
+ */
 const RecordsTableComponent = () => {
     useEffect(() => {
         console.log("Fetching records...");
       }, []);
 
+      
+
   const { isLoading, error, data } = useQuery<RecordJSON[], Error>(
     "records",
     fetchRecords
   );
+
+  
 
   //handle loading 
   if (isLoading) {

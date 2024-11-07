@@ -6,8 +6,8 @@ import { Cart } from '../interfaces/Cart';
 // Fetching carts from the API
 const fetchcarts = async (): Promise<Cart[]> => {
   const response = await axios.get<Cart[]>("http://localhost:8081/api/carts");
-  console.log(response.data); // Log the response to see the structure
-  return response.data; // Return the array of Cart
+  console.log(response.data); 
+  return response.data; 
 };
 
 const CartsTableComponent = () => {
