@@ -33,7 +33,7 @@ export type RecordJSON = {
 
   export type CartItem = {
     total: number;
-    id: number; // Cart ID
+    id: number; //cart ID
     _links: {
       self: {
         href: string;
@@ -52,27 +52,3 @@ export type RecordJSON = {
       carts: CartItem[];
     };
   };
-
-  export type RecordResponse = {
-    name: string;
-    genre: string;
-    yearReleased: number;
-    price: number;
-    _links: {
-      self: {
-        href: string;
-      };
-      record: {
-        href: string;
-      };
-      artist: {
-        href: string;
-      };
-    };
-    };
-
-    export type RecordEntry = {
-      record: RecordJSON;
-      url: string;
-    }
-  

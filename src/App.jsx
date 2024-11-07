@@ -1,16 +1,21 @@
-import './App.css';
-import RecordsTableComponent from './components/RecordsTableComponent';
-import ArtistsTableComponent from './components/ArtistsTableComponent';
-import CartsTableComponent from './components/CartsTableComponent';
+import ArtistList from './components/ArtistList'
+import RecordList from './components/RecordList'
+
+import './App.css'
+import UserList from './components/UserList'
+import CartList from './components/CartList'
 
 function App() {
+ 
+
   return (
-    <div className="App">
-      <RecordsTableComponent />
-      <ArtistsTableComponent />
-      <CartsTableComponent />
-    </div>
-  );
+    <>
+      <ArtistList/>
+      <RecordList/>
+      <UserList/>
+      <CartList/>
+    </>
+  )
 }
 
-export default App;
+export default App
