@@ -16,6 +16,7 @@ export type RecordJSON = {
     };
   };
 
+  //same as ArtistResponse
   export type ArtistJSON = {
     name: string;
     _links: {
@@ -30,6 +31,15 @@ export type RecordJSON = {
       };
     };
   };
+
+  export type Artist = {
+    name: string;
+  }
+
+  export type ArtistEntry = {
+    artist: Artist;
+    url: string;
+  }
 
   export type CartItem = {
     total: number;
@@ -52,3 +62,39 @@ export type RecordJSON = {
       carts: CartItem[];
     };
   };
+
+  
+export type RecordResponse = {
+  name: string;
+  genre: string;
+  yearReleased: number;
+  price: number;
+  _links: {
+    self: {
+      href: string;
+    };
+    record: {
+      href: string;
+    };
+    artist: {
+      href: string;
+    };
+  };
+};
+
+export type Record = {
+  name: string;
+  genre: string;
+  yearReleased: number;
+  price: number;
+}
+
+export type RecordEntry = {
+  record: {
+    name: string;
+    genre: string;
+    yearReleased: number;
+    price: number;
+  };
+  url: string;
+};
