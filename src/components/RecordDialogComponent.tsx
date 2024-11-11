@@ -1,3 +1,4 @@
+import React from "react";
 import DialogContent from "@mui/material/DialogContent";
 import { RecordResponse } from "../types";
 
@@ -6,7 +7,7 @@ type DialogFormProps = {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-function CarDialogContent({ record, handleChange }: DialogFormProps) {
+function RecordDialogContent({ record, handleChange }: DialogFormProps) {
   return (
     <>
       <DialogContent>
@@ -24,36 +25,8 @@ function CarDialogContent({ record, handleChange }: DialogFormProps) {
           onChange={handleChange}
         />
         <br />
-        <input
-          placeholder="Year Released"
-          name="colour"
-          value={car.colour}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          placeholder="Year"
-          name="registrationYear"
-          value={car.registrationYear}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          placeholder="Reg.nr."
-          name="registration"
-          value={car.registration}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          placeholder="Price"
-          name="price"
-          value={car.price}
-          onChange={handleChange}
-        />
-        <br />
       </DialogContent>
     </>
   );
 }
-export default CarDialogContent;
+export default RecordDialogContent;
