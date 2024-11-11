@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,6 +16,7 @@ type recorddata = {
   
   type FormProps = {
     recorddata: RecordResponse; 
+    onClose: () => void; 
   };
 
 
@@ -49,14 +51,16 @@ function EditRecord({ recorddata }: FormProps) {
     setRecord({ ...record, [event.target.name]: event.target.value });
   };
 
-  const { mutate } = useMutation(updateRecord, {
+  const { mutate } = useMutation<RecordResponse, Error, RecordEntry>({
+    mutationFn: updateRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries(["records"]);
+      queryClient.invalidateQueries({ queryKey: ["records"] });
     },
     onError: (err) => {
       console.error(err);
     },
   });
+  
   
   const handleSave = () => {
     const url = recorddata._links.self.href;
@@ -70,8 +74,6 @@ function EditRecord({ recorddata }: FormProps) {
     });
     setOpen(false);
   };
-
-  
 
   return (
     <>
