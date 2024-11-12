@@ -1,6 +1,5 @@
 import { Artist } from "./Artist";
 
-
 export interface Record{
     id:number;
     name:string;

@@ -1,67 +1,106 @@
-import React, { useEffect } from "react";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
+import { getRecords, deleteRecord } from "../api/recordapi";
+import { DataGrid, GridColDef, GridCellParams, GridToolbar } from "@mui/x-data-grid";
+import Snackbar from "@mui/material/Snackbar";
+import AddRecord from "./AddRecord";
+import EditRecord from "./EditRecord";
 import { RecordJSON } from "../types";
 
+function RecordList() {
+  interface ApiResponse {
+    _embedded: {
+      records: RecordJSON[];
+    }
+  }
 
-interface ApiResponse {
-  _embedded: {
-    records: RecordJSON[];
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Define the getRecords function directly in the component
+  const getRecords = async (): Promise<RecordJSON[]> => {
+    const response = await axios.get<ApiResponse>(
+      "http://localhost:8081/api/records"
+    );
+    return response.data._embedded.records;
   };
-}
 
-const fetchRecords = async (): Promise<RecordJSON[]> => {
-  const response = await axios.get<ApiResponse>(
-    "http://localhost:8081/api/records"
-  );
-  return response.data._embedded.records;
-};
+  // Query hook to fetch records
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["records"],
+    queryFn: getRecords,
+  });
 
-const RecordsTableComponent = () => {
-    useEffect(() => {
-        console.log("Fetching records...");
-      }, []);
+  // Mutation hook to delete an record
+  const { mutate } = useMutation(deleteRecord, {
+    onSuccess: () => {
+      setOpen(true);
+      queryClient.invalidateQueries(["records"]);
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
 
-  const { isLoading, error, data } = useQuery<RecordJSON[], Error>(
-    "records",
-    fetchRecords
-  );
+  // Define columns for DataGrid
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "genre", headerName: "Genre", width: 200 },
+    { field: "yearReleased", headerName: "Year Released", width: 200 },
+    { field: "price", headerName: "Price", width: 200 },
+    {
+      field: "edit",
+      headerName: "",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridCellParams) => <EditRecord recorddata={params.row} />,
+    },
+    {
+      field: "delete",
+      headerName: "",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridCellParams) => (
+        <button
+          onClick={() => {
+            if (window.confirm(`Are you sure you want to delete ${params.row.name}?`)) {
+              mutate(params.row._links.self.href);
+            }
+          }}
+        >
+          Delete
+        </button>
+      ),
+    },
+  ];
 
-  //handle loading 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  //handle error 
-  if (error) {
-    return <div>Error fetching records: {error.message}</div>;
-  }
+  // Handle loading, error, and success states
+  if (isLoading) return <span>Loading...</span>;
+  if (isError) return <span>Error fetching records</span>;
 
   return (
-    <div>
-      <h1>Records List</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Genre</th>
-                    <th>Year Released</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {data?.map((record: RecordJSON) => (
-                    <tr key={record._links.self.href}>
-                        <td>{record.name}</td>
-                        <td>{record.genre}</td>
-                        <td>{record.yearReleased}</td>
-                        <td>{record.price}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-        </div>
-    );
-};
+    <>
+      <AddRecord />
+      <DataGrid
+        rows={data}
+        columns={columns}
+        disableRowSelectionOnClick={true}
+        getRowId={(row) => row._links.self.href}
+        slots={{ toolbar: GridToolbar }}
+      />
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={() => setOpen(false)}
+        message="Record deleted"
+      />
+    </>
+  );
+}
 
-export default RecordsTableComponent;
+export default RecordList;

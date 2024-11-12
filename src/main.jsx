@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'; // Import these
 import App from './App.jsx'; // Adjust based on your structure
 import './index.css'; // Adjust based on your structure
 
+
 // Create a client
 const queryClient = new QueryClient();
 

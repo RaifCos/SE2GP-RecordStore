@@ -1,72 +1,103 @@
-import React, { useEffect } from "react";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
-import { Cart } from '../interfaces/Cart';
+import { getCarts, deleteCart } from "../api/cartapi";
+import { DataGrid, GridColDef, GridCellParams, GridToolbar } from "@mui/x-data-grid";
+import Snackbar from "@mui/material/Snackbar";
+import AddCart from "./AddCart";
+import { CartJSON } from "../types";
 
-// Fetching carts from the API
-const fetchcarts = async (): Promise<Cart[]> => {
-  const response = await axios.get<Cart[]>("http://localhost:8081/api/carts");
-  console.log(response.data); // Log the response to see the structure
-  return response.data; // Return the array of Cart
-};
-
-const CartsTableComponent = () => {
-  useEffect(() => {
-    console.log("Fetching carts...");
-  }, []);
-
-  // Using react-query to fetch data
-  const { isLoading, error, data } = useQuery<Cart[], Error>(
-    "carts",
-    fetchcarts
-  );
-
-  // Handle loading state
-  if (isLoading) {
-    return <div>Loading...</div>;
+function CartList() {
+  interface ApiResponse {
+    _embedded: {
+      carts: CartJSON[];
+    }
   }
 
-  // Handle error state
-  if (error) {
-    return <div>Error fetching carts: {error.message}</div>;
-  }
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Query hook to fetch carts
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["carts"],
+    queryFn: getCarts,
+  });
+
+  // Mutation hook to delete an cart
+  const { mutate } = useMutation(deleteCart, {
+    onSuccess: () => {
+      setOpen(true);
+      queryClient.invalidateQueries(["carts"]);
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
+  // Define columns for DataGrid
+  const columns: GridColDef[] = [
+    { field: "cartID", headerName: "Cart ID", width: 200 },
+    {
+      field: "cartItems",
+      headerName: "Records",
+      width: 400,
+      renderCell: (params: GridCellParams) => {
+        const recordDetails = params.row.cartItems
+          .map(
+            (item: { record: { name: string; price: number } }) =>
+              `${item.record.name} - $${item.record.price}`
+          )
+          .join(", "); // Use HTML <br /> to create a line break
+        return <span dangerouslySetInnerHTML={{ __html: recordDetails }} />;
+      },
+    },
+    { field: "total", headerName: "Total Price", width: 200 },
+  
+
+    {
+      field: "delete",
+      headerName: "",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridCellParams) => (
+        <button
+          onClick={() => {
+            if (window.confirm(`Are you sure you want to delete ${params.row.name}?`)) {
+              mutate(params.row._links.self.href);
+            }
+          }}
+        >
+          Delete
+        </button>
+      ),
+    },
+  ];
+
+  // Handle loading, error, and success states
+  if (isLoading) return <span>Loading...</span>;
+  if (isError) return <span>Error fetching carts</span>;
 
   return (
-    <div>
-      <h1>Carts List</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Cart ID</th>
-          <th>Records</th>
-          <th>Total Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data?.map((cart) => (
-          <tr key={cart.cartID}>
-            <td>{cart.cartID}</td>
-            <td>
-              <ul>
-                {cart.cartItems && cart.cartItems.length > 0 ? (
-                  cart.cartItems.map((item) => (
-                    <li key={item.id}>
-                      {item.record.name} - {item.record.genre} ({item.record.yearReleased}) - ${item.record.price}
-                    </li>
-                  ))
-                ) : (
-                  <li>No items in this cart</li>
-                )}
-              </ul>
-            </td>
-            <td>{cart.total}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    </div>
+    <>
+      <AddCart />
+      <DataGrid
+        rows={data}
+        columns={columns}
+        disableRowSelectionOnClick={true}
+        getRowId={(row) => row.cartID}
+        slots={{ toolbar: GridToolbar }}
+      />
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={() => setOpen(false)}
+        message="Cart deleted"
+      />
+    </>
   );
-};
+}
 
-export default CartsTableComponent;
-
+export default CartList;
+          
