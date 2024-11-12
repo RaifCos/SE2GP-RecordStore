@@ -2,26 +2,31 @@ import { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import ArtistDialogContent from "./ArtistDialogContent";
-import { Artist, ArtistJSON, ArtistEntry } from "../types";
-import { updateArtist } from "../api/artistapi";
+import UsersDialogContent from "./UsersDialogContent";
+import { User, UserResponse, UserEntry } from "../types";
+import { updateUser } from "../api/usersapi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
 type FormProps = {
-    artistdata: ArtistJSON;
+    userdata: UserResponse;
   };
 
-  function EditArtist({ artistdata }: FormProps) {
+  function EditUser({ userdata }: FormProps) {
     const queryClient = useQueryClient();
   
     const [open, setOpen] = useState(false);
-    const [artist, setArtist] = useState<Artist>({
-        name: "",
+    const [user, setUser] = useState<User>({
+            first_name: "",
+            last_name: "",
+            email: "",
+            address: "",
+            username: "",
+            phonenumber: "",
     });
 
-    const { mutate } = useMutation<ArtistJSON, Error, ArtistEntry>({
-      mutationFn: updateArtist,
+    const { mutate } = useMutation<UserResponse, Error, UserEntry>({
+      mutationFn: updateUser,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["records"] });
       },
@@ -30,12 +35,15 @@ type FormProps = {
       },
     });
     
-    
-
       const handleClickOpen = () => {
         setOpen(true);
-        setArtist({
-            name: artistdata.name,
+        setUser({
+            first_name: "",
+            last_name: "",
+            email: "",
+            address: "",
+            username: "",
+            phonenumber: "",
         });
       };
 
@@ -44,25 +52,30 @@ type FormProps = {
       };
 
       const handleSave = () => {
-        const url = artistdata._links.self.href;
-        const artistEntry: ArtistEntry = { artist, url };
-        mutate(artistEntry);
-        setArtist({
-            name: "",
+        const url = userdata.href;
+        const UserEntry: UserEntry = { user, url };
+        mutate(UserEntry);
+        setUser({
+            first_name: "",
+            last_name: "",
+            email: "",
+            address: "",
+            username: "",
+            phonenumber: "",
         });
         setOpen(false);
       };
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setArtist({ ...artist, [event.target.name]: event.target.value });
+        setUser({ ...user, [event.target.name]: event.target.value });
       };
 
       return (
         <>
           <button onClick={handleClickOpen}>Edit</button>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Edit Artist</DialogTitle>
-            <ArtistDialogContent artist={artist} handleChange={handleChange} />
+            <DialogTitle>Edit User</DialogTitle>
+            <UsersDialogContent user={user} handleChange={handleChange} />
             <DialogActions>
               <button onClick={handleClose}>Cancel</button>
               <button onClick={handleSave}>Save</button>
@@ -72,4 +85,4 @@ type FormProps = {
       );
     }
     
-    export default EditArtist;
+    export default EditUser;

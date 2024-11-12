@@ -7,18 +7,21 @@ export const getArtists = async (): Promise<ArtistJSON[]> => {
 }
 
 export const deleteArtist = async (link: string): Promise<ArtistJSON> => {
+  console.log("Sending artist data to API:");
   const response = await axios.delete(link);
   return response.data;
 }
 
 export const addArtist = async (artist: Artist): Promise<ArtistJSON> => {
-  const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/artists`, artist, {
+  console.log("Sending artist data to API:", artist);
+  const response = await axios.post(`http://localhost:8081/api/artists`, artist, {
     headers: { 'Content-Type': 'application/json' },
   });
   return response.data;
 }
 
 export const updateArtist = async (artistEntry: ArtistEntry): Promise<ArtistJSON> => {
+  console.log("Sending artist data to API:", artistEntry);
   const response = await axios.put(artistEntry.url, artistEntry.artist, {
     headers: { 'Content-Type': 'application/json' },
   });

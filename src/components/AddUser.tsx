@@ -1,27 +1,32 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addArtist } from "../api/artistapi";
+import { addUser } from "../api/usersapi";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import ArtistDialogContent from "./ArtistDialogContent";
-import { ArtistJSON, Artist } from "../types";
+import UsersDialogContent from "./UsersDialogContent";
+import { UserResponse, User } from "../types";
 import { useInfiniteQuery } from "react-query";
 import React from "react";
 
-function AddArtist() {
+function AddUser() {
     const queryClient = useQueryClient();
 
     const [open, setOpen] = useState(false);
-    const [artist, setArtist] = useState<Artist>({
-        name: ""
+    const [user, setUser] = useState<User>({
+            first_name: "",
+            last_name: "",
+            email: "",
+            address: "",
+            username: "",
+            phonenumber: "",
     });
 
-    const { mutate } = useMutation<ArtistJSON, Error, Artist>(
+    const { mutate } = useMutation<UserResponse, Error, User>(
         {
-          mutationFn: addArtist,
+          mutationFn: addUser,
             onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ["artists"] }); // Invalidate the artists query
+                queryClient.invalidateQueries({ queryKey: ["users"] }); 
             },
             onError: (err) => {
                 console.error(err);
@@ -38,23 +43,28 @@ function AddArtist() {
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setArtist({ ...artist, [event.target.name]: event.target.value });
+        setUser({ ...user, [event.target.name]: event.target.value });
     };
 
     const handleSave = () => {
-        mutate(artist);
-        setArtist({
-            name: ""
+        mutate(user);
+        setUser({
+            first_name: "",
+            last_name: "",
+            email: "",
+            address: "",
+            username: "",
+            phonenumber: "",
         });
         handleClose();
       };
 
       return (
         <>
-        <button onClick={handleClickOpen}>New Artist</button>
+        <button onClick={handleClickOpen}>New User</button>
         <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>New artist</DialogTitle>
-        <ArtistDialogContent artist={artist} handleChange={handleChange} />
+        <DialogTitle>New user</DialogTitle>
+        <UsersDialogContent user={user} handleChange={handleChange} />
         <DialogActions>
           <button onClick={handleClose}>Cancel</button>
           <button onClick={handleSave}>Save</button>
@@ -64,4 +74,4 @@ function AddArtist() {
   );
 }
 
-export default AddArtist;
+export default AddUser;

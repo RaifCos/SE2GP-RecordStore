@@ -37,8 +37,8 @@ export type RecordJSON = {
   }
 
   export type ArtistEntry = {
-    artist: Artist;
     url: string;
+    artist: Artist;
   }
 
   export type CartItem = {
@@ -98,3 +98,28 @@ export type RecordEntry = {
   };
   url: string;
 };
+
+  //same as ArtistResponse
+  export type UserResponse = {
+    href: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    address: string;
+    username: string;
+    phonenumber: string;
+  };
+
+  export type User = {
+    first_name: string;
+    last_name: string;
+    email: string;
+    address: string;
+    username: string;
+    phonenumber: string;
+  }
+
+  export type UserEntry = {
+    url: string;
+    user: User;
+  }

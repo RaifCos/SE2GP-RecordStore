@@ -1,142 +1,103 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
-import { ArtistJSON } from "../types";
 import { getArtists, deleteArtist } from "../api/artistapi";
-import {
-  DataGrid,
-  GridColDef,
-  GridCellParams,
-  GridToolbar,
-} from "@mui/x-data-grid";
-
+import { DataGrid, GridColDef, GridCellParams, GridToolbar } from "@mui/x-data-grid";
 import Snackbar from "@mui/material/Snackbar";
 import AddArtist from "./AddArtist";
 import EditArtist from "./EditArtist";
+import { ArtistJSON } from "../types";
 
-function Artistlist() {
+function ArtistList() {
+  interface ApiResponse {
+    _embedded: {
+      artists: ArtistJSON[];
+    }
+  }
+
   const [open, setOpen] = useState(false);
-
   const queryClient = useQueryClient();
 
+  // Define the getArtists function directly in the component
+  const getArtists = async (): Promise<ArtistJSON[]> => {
+    const response = await axios.get<ApiResponse>(
+      "http://localhost:8081/api/artists"
+    );
+    return response.data._embedded.artists;
+  };
+
+  // Query hook to fetch artists
   const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["artists"],
     queryFn: getArtists,
   });
 
+  // Mutation hook to delete an artist
   const { mutate } = useMutation(deleteArtist, {
     onSuccess: () => {
       setOpen(true);
-      queryClient.invalidateQueries({ queryKey: ["artists"] });
+      queryClient.invalidateQueries(["artists"]);
     },
     onError: (err) => {
       console.error(err);
     },
   });
-}
 
-const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", width: 200 },
-  {
-    field: "edit",
-    headerName: "",
-    width: 90,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-    renderCell: (params: GridCellParams) => <EditArtist artistdata={params.row} />,
-  },
-  {
-    field: "delete",
-    headerName: "",
-    width: 90,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-    renderCell: (params: GridCellParams) => (
-      <button
-        onClick={() => {
-          if (
-            window.confirm(
-              `Are you sure you want to delete ${params.row.make} ${params.row.model}?`
-            )
-          ) {
-            mutate(params.row._links.artist.href);
-          }
-        }}
-      >
-        Delete
-      </button>
-    ),
-  },
-];
+  // Define columns for DataGrid
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", width: 200 },
+    {
+      field: "edit",
+      headerName: "",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridCellParams) => <EditArtist artistdata={params.row} />,
+    },
+    {
+      field: "delete",
+      headerName: "",
+      width: 90,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      renderCell: (params: GridCellParams) => (
+        <button
+          onClick={() => {
+            if (window.confirm(`Are you sure you want to delete ${params.row.name}?`)) {
+              mutate(params.row._links.self.href);
+            }
+          }}
+        >
+          Delete
+        </button>
+      ),
+    },
+  ];
 
-
-interface ApiResponse {
-  _embedded: {
-    artists: ArtistJSON[];
-  };
-}
-
-
-const fetchartists = async (): Promise<ArtistJSON[]> => {
-  const response = await axios.get<ApiResponse>(
-    "http://localhost:8081/api/artists"
-  );
-  return response.data._embedded.artists;
-};
-
-const artistsTableComponent = () => {
-    useEffect(() => {
-        console.log("Fetching artists...");
-      }, []);
-
-  const { isLoading, error, data } = useQuery<ArtistJSON[], Error>(
-    "artists",
-    fetchartists
-  );
-
-  //handle loading 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  //handle error 
-  if (error) {
-    return <div>Error fetching artists: {error.message}</div>;
-  }
-
-  function setOpen(arg0: boolean): void {
-    throw new Error("Function not implemented.");
-  }
+  // Handle loading, error, and success states
+  if (isLoading) return <span>Loading...</span>;
+  if (isError) return <span>Error fetching artists</span>;
 
   return (
     <>
       <AddArtist />
-        <DataGrid
-          rows={data}
-          columns={columns}
-          // option if you don't want to highlight selected row
-          disableRowSelectionOnClick={true}
-          //all rows must have unique id defined using getRowId
-          getRowId={(row) => row._links.self.href}
-          // sets toolbar
-          slots={{ toolbar: GridToolbar }}
-        />
-
-        <Snackbar
-          open={open}
-          autoHideDuration={2000}
-          onClose={() => setOpen(false)}
-          message="Artist deleted"
-        />
-      </>
-
-    );
-};
-
-export default artistsTableComponent;
-function mutate(href: any) {
-  throw new Error("Function not implemented.");
+      <DataGrid
+        rows={data}
+        columns={columns}
+        disableRowSelectionOnClick={true}
+        getRowId={(row) => row._links.self.href}
+        slots={{ toolbar: GridToolbar }}
+      />
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={() => setOpen(false)}
+        message="Artist deleted"
+      />
+    </>
+  );
 }
 
+export default ArtistList;

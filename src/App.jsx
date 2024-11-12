@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Button from '@mui/material/Button';
 import AddArtist from './components/AddArtist'; // Import the AddArtist component
+import AddUser from './components/AddUser';
 
 const queryClient = new QueryClient();
 
@@ -36,9 +37,6 @@ function App() {
 
       <Container>
         {/* Button to open the "Add Artist" dialog */}
-        <Button variant="contained" color="primary" onClick={handleOpen} style={{ margin: '20px 0' }}>
-          Add Artist
-        </Button>
 
         {/* AddArtist modal or form */}
         <AddArtist open={open} onClose={handleClose} />
@@ -48,6 +46,7 @@ function App() {
 
         {/* Other components */}
         <RecordList />
+        <AddUser open={open} onClose={handleClose} />
         <UserList />
         <CartList />
       </Container>
